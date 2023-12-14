@@ -43,6 +43,12 @@ geojson.features.forEach((feature)=>{
         return;
     }  
 });
+const getFeatureTitle=(props)=>{
+    if (props.name !== undefined) return props.name;
+    if (props.type !== undefined) return `${props.type}/${props.id}`;
+    return props.id;    
+}
+let existingTitles={};
 let gpx_str = togpx(filtered, {
     creator: "OSM",
     metadata: {
@@ -51,9 +57,12 @@ let gpx_str = togpx(filtered, {
       time: (new Date()).toDateString()
     },
     featureTitle(props) {
-        if (props.name !== undefined) return props.name;
-        if (props.type !== undefined) return `${props.type}/${props.id}`;
-        return props.id;
+        let title=getFeatureTitle(props);
+        if (existingTitles[title]){
+            title+=" "+props.id.replace(/.*[/]/,"");
+        }
+        existingTitles[title]=true;
+        return title;
     },
     //featureDescription: function(props) {},
     featureLink(props) {

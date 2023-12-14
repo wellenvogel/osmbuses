@@ -12,6 +12,10 @@ Usage
 * run _./getbuses.js outbb.gpx "28.003496667577,-17.370620727539,28.225759715539,-17.05421482309"_<br>
   this will fetch the data for the given bounding box
 
+Thanks
+------
+This code uses parts of the JS code from [Overpass Turbo](https://github.com/tyrasd/overpass-turbo).
+
 Links
 -----
   * [OverPass Turbo](https://overpass-turbo.eu/index.html) for testing queries

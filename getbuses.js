@@ -9,13 +9,20 @@ const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 const API="https://overpass-api.de/api/interpreter";
 const QUERY="q.txt";
+const BBOX_GOM="(28.003496667577,-17.370620727539,28.225759715539,-17.05421482309)";
 if (process.argv.length < 3) {
-    console.error(`usage: ${process.argv[0]} ${process.argv[1]} outname`);
+    console.error(`usage: ${process.argv[0]} ${process.argv[1]} outname [bbox (s,w,n,e)]`);
     process.exit(1);
   }
 let outname=process.argv[2]; 
+let bb=BBOX_GOM;
+if (process.argv.length > 3){
+    bb=process.argv[3];
+    if (! bb.match(/^ *\(.*\)/)) bb="("+bb+")";
+}
 let fn=path.join(__dirname,QUERY);
-let qv=readFileSync(QUERY);
+let qv=readFileSync(QUERY,{encoding: 'utf8'});
+qv=qv.replaceAll("${bbox}",bb);
 console.log(`query: ${qv}`);
 let osmjson=await fetch(API,{
     method: "POST",

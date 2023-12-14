@@ -22,7 +22,21 @@ let osmjson=await fetch(API,{
     body: "data="+ encodeURIComponent(qv)
     }).then((r)=>r.json());
 let geojson=osmtogeojson(osmjson);
-let gpx_str = togpx(geojson, {
+let filtered={
+    type: 'FeatureCollection',
+    features:[]
+};
+geojson.features.forEach((feature)=>{
+    if (feature.properties && feature.properties.route === 'bus'){
+        filtered.features.push(feature);
+        return;
+    }
+    if (feature.properties && feature.properties.bus === 'yes'){
+        filtered.features.push(feature);
+        return;
+    }  
+});
+let gpx_str = togpx(filtered, {
     creator: "OSM",
     metadata: {
       desc: "Filtered OSM data converted to GPX by overpass turbo",
@@ -30,17 +44,13 @@ let gpx_str = togpx(geojson, {
       time: (new Date()).toDateString()
     },
     featureTitle(props) {
-      if (props.tags) {
-        if (props.tags.name) return props.tags.name;
-        if (props.tags.ref) return props.tags.ref;
-        if (props.tags["addr:housenumber"] && props.tags["addr:street"])
-          return `${props.tags["addr:street"]} ${props.tags["addr:housenumber"]}`;
-      }
-      return `${props.type}/${props.id}`;
+        if (props.name !== undefined) return props.name;
+        if (props.type !== undefined) return `${props.type}/${props.id}`;
+        return props.id;
     },
     //featureDescription: function(props) {},
     featureLink(props) {
-      return `http://osm.org/browse/${props.type}/${props.id}`;
+        return `http://osm.org/browse/${props.id}`;
     }
   });
   if (gpx_str[1] !== "?"){

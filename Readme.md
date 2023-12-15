@@ -11,6 +11,8 @@ Usage
   this will fetch the bus data for a predefined bounding box (Canarias: Gomera) and writes them as out.gpx
 * run _./getbuses.js outbb.gpx "28.003496667577,-17.370620727539,28.225759715539,-17.05421482309"_<br>
   this will fetch the data for the given bounding box
+* run _./getbuses.js -k out.kml_ <br>
+  will fetch the data and export to kml
 
 Thanks
 ------
